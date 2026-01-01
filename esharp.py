@@ -1,6 +1,10 @@
 import re
 import sys
 import math
+import socket
+import hashlib
+import subprocess
+import os
 
 # --- LEXER ---
 class Token:
@@ -53,7 +57,38 @@ class Lexer:
 # --- INTERPRETER SIMULATION ---
 class ESharpInterpreter:
     def __init__(self):
-        self.globals = {"math": math, "print": print}
+        self.globals = {
+            "math": math, 
+            "print": print,
+            "net": self.NetModule(),
+            "crypto": self.CryptoModule(),
+            "sys": self.SysModule()
+        }
+
+    class NetModule:
+        def scan(self, host, port):
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(0.1)
+            result = s.connect_ex((host, port))
+            s.close()
+            return result == 0
+        
+        def get_ip(self, domain):
+            return socket.gethostbyname(domain)
+
+    class CryptoModule:
+        def hash_md5(self, text):
+            return hashlib.md5(text.encode()).hexdigest()
+        
+        def hash_sha256(self, text):
+            return hashlib.sha256(text.encode()).hexdigest()
+
+    class SysModule:
+        def execute(self, cmd):
+            try:
+                return subprocess.check_output(cmd, shell=True).decode()
+            except:
+                return "Execution failed."
 
     def run(self, code):
         print(f"--- E# Modern Execution Environment ---")
@@ -70,18 +105,24 @@ class ESharpInterpreter:
             print(f"Runtime Error: {e}")
 
     def execute_demo(self):
-        # This simulates the execution of the provided example
         print("\n[Output]")
-        # let age: int = 12;
-        age = 12
-        # let name: string = "Levi";
-        name = "Levi"
-        # function greet(name: string): string { return "Hello, " + name + "!"; }
+        # Simulation of the new hacking modules
+        print("--- Security Module Test ---")
+        
+        # Crypto
+        sha = hashlib.sha256("password123".encode()).hexdigest()
+        print(f"SHA256 Hash: {sha}")
+        
+        # Net (Simulated scan)
+        print(f"Scanning localhost port 80: {'Open' if False else 'Closed'}")
+        
+        # Sys
+        print(f"Current User: {os.getlogin()}")
+        
+        print("\n--- Standard E# Test ---")
         def greet(n): return f"Hello, {n}!"
+        print(greet("Levi"))
         
-        print(greet(name))
-        
-        # class Person { ... }
         class Person:
             def __init__(self, name, age):
                 self.name = name
@@ -91,13 +132,6 @@ class ESharpInterpreter:
         
         levi = Person("Levi", 12)
         print(levi.greet())
-        
-        # lambda
-        square = lambda x: x * x
-        print(f"Square of 4: {square(4)}")
-        
-        # math
-        print(f"Sqrt of 16: {math.sqrt(16)}")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

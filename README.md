@@ -7,6 +7,29 @@ E# is a modern, high-level programming language designed for clarity, power, and
 - **Power**: Supports Object-Oriented, Functional, and Procedural programming.
 - **Safety**: Static but flexible typing.
 - **Versatility**: Suitable for web, apps, games, and scripting.
+- **Cyber-Security**: Built-in modules for network scanning, cryptography, and system interaction.
+
+## Cyber-Security Features
+
+### Network Scanning
+```e_sharp
+import net;
+if net.scan("127.0.0.1", 80) {
+    print("Port 80 is open");
+}
+```
+
+### Cryptography
+```e_sharp
+import crypto;
+let hash = crypto.hash_sha256("secret_data");
+```
+
+### System Interaction
+```e_sharp
+import sys;
+print(sys.execute("ls -la"));
+```
 
 ## Quick Start
 
